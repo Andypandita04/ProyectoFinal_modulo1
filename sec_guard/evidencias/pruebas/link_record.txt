@@ -1,0 +1,48 @@
+              ------------------------------  
+                --Archivo: ./hardlink.txt   
+                Dueño: kali   
+                Permisos : -rw-rw-r--  
+                Tamaño : 4.0K  
+                Inodo: 4069672   
+                Marcas de tiempo:                                    
+                Creacion : 2026-11-09 19:33:39.591172249 -0500
+                Acceso : 2026-11-09 19:42:36.989755627 -0500
+                Modificacion: 2026-11-09 19:43:00.753632476 -0500
+                Modificacion de metadatos: 2026-11-09 19:43:00.753632476 -0500  
+              ------------------------------ 
+              ------------------------------  
+                --Archivo: ./metadatos.sh   
+                Dueño: kali   
+                Permisos : -rwxrwxr-x  
+                Tamaño : 4.0K  
+                Inodo: 4069675   
+                Marcas de tiempo:                                    
+                Creacion : 2026-11-09 21:09:05.029387540 -0500
+                Acceso : 2026-11-09 21:09:07.842068735 -0500
+                Modificacion: 2026-11-09 21:09:05.029387540 -0500
+                Modificacion de metadatos: 2026-11-09 21:09:05.032664629 -0500  
+              ------------------------------ 
+              ------------------------------  
+                --Archivo: ./prueba_doc_version1.txt   
+                Dueño: kali   
+                Permisos : -rw-rw-r--  
+                Tamaño : 4.0K  
+                Inodo: 4069672   
+                Marcas de tiempo:                                    
+                Creacion : 2026-11-09 19:33:39.591172249 -0500
+                Acceso : 2026-11-09 19:42:36.989755627 -0500
+                Modificacion: 2026-11-09 19:43:00.753632476 -0500
+                Modificacion de metadatos: 2026-11-09 19:43:00.753632476 -0500  
+              ------------------------------ 
+              ------------------------------  
+                --Archivo: ./script_etapa1.sh   
+                Dueño: kali   
+                Permisos : -rw-rw-r--  
+                Tamaño : 4.0K  
+                Inodo: 4069689   
+                Marcas de tiempo:                                    
+                Creacion : 2026-11-09 19:53:07.002910906 -0500
+                Acceso : 2026-11-09 19:53:07.002910906 -0500
+                Modificacion: 2026-11-09 19:53:07.002910906 -0500
+                Modificacion de metadatos: 2026-11-09 19:53:42.221010465 -0500  
+              ------------------------------ 

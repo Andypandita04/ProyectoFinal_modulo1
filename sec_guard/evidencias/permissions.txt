@@ -1,0 +1,9 @@
+
+
+## Asignacion de permisos por directorios:
+  Dado que no queremos que ningun grupo haga modificaciones 
+  al proyecto, vamos a asignar a todos los directorios los siguientes  permisos 
+    755 
+  Es decir, todos los permisos para usuario propietario y,
+  permisos de lectura y ejeucion para grupo y otros (para poder leer y acceder a los directirio sin hacer modificaciones)
+   
