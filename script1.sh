@@ -1,4 +1,7 @@
+#!/bin/bash
 
+# Creo una varible para regresar al directorio fuente del proyecto
+ruta=$(pwd)
 
 # Creacion de directorios
 	mkdir -p  sec_guard/{capturas,preparados,fuentes,scripts,resultados,evidencias}
@@ -22,13 +25,13 @@
 	touch prueba_doc.txt
       
 	echo "## Informacion del sistema: $(uname -a) ">> prueba_doc.txt
--e
+
 # Creacion de enlace duro a prueba_doc.txt
 	 ln prueba_doc.txt hardlink.txt
--e
+
 # Cambio de nombre de archivo prueba a prueba_doc_version1.txt
 	 mv prueba_doc.txt prueba_doc_version1.txt
 
 # script para agregar metadatos a link_record.txt
-        .\metadatos.sh
+        bash "$ruta/metadatos.sh"
 	 
