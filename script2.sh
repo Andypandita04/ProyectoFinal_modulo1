@@ -108,6 +108,10 @@ echo "Procesando sshd_config"
 
 	echo "Los archivos procesados ya se encuentras en $RUTA_PREP"
 
+	bash capturas.sh
+
+	bash normalizacion.sh
+
 
 
 
