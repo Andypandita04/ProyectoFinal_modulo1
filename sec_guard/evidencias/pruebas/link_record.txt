@@ -1,0 +1,24 @@
+              ------------------------------  
+                --Archivo: ./hardlink.txt   
+                Dueño: kali   
+                Permisos : -rw-rw-r--  
+                Tamaño : 4.0K  
+                Inodo: 4069672   
+                Marcas de tiempo:                                    
+                Creacion : 2026-11-09 19:33:39.591172249 -0500
+                Acceso : 2026-11-12 07:36:36.463272050 -0500
+                Modificacion: 2026-11-09 19:43:00.753632476 -0500
+                Modificacion de metadatos: 2026-11-12 07:35:47.267880188 -0500  
+              ------------------------------ 
+              ------------------------------  
+                --Archivo: ./prueba_doc_version1.txt   
+                Dueño: kali   
+                Permisos : -rw-rw-r--  
+                Tamaño : 4.0K  
+                Inodo: 4066430   
+                Marcas de tiempo:                                    
+                Creacion : 2026-11-12 07:37:43.069954549 -0500
+                Acceso : 2026-11-12 07:37:43.069954549 -0500
+                Modificacion: 2026-11-12 07:37:43.073952550 -0500
+                Modificacion de metadatos: 2026-11-12 07:37:43.077950550 -0500  
+              ------------------------------ 
