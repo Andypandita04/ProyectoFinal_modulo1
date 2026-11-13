@@ -28,3 +28,12 @@ truncate -s 10 "$RUTA/$ARCHIVO"
 
 echo "Vamos a ejecutar el script ejecutar.sh"
 bash "$ARCHIVO_EJECUTAR"
+
+# Restauro auditoria en estaticos y borro resguardo
+echo "Restaurando $ARCHIVO original..."
+mv -f "$RESGUARDO/$ARCHIVO" "$RUTA/$ARCHIVO"
+rmdir "$RESGUARDO" 2>/dev/null
+echo "Veamos el contenido de $RUTA:"
+ls -l "$RUTA"
+
+echo "Prueba 1 finalizada y archivo restaurado."
