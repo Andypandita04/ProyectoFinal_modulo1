@@ -9,26 +9,28 @@ RUTA_SCRIPTS="sec_guard/scripts"
 
 
 # Checo su existencia
-if [ ! -f "$arch_tar" ];then
+if [ ! -f "$RUTA_SEC/$RUTA_CAPTURAS/$arch_tar" ];then
 	echo "Error: no existe el archivo tar :$arch_tar"
 	exit 1
 fi
 
 # veirfico su integridad (que no esten corruptos)
 
-if tar -tf  "$arch_tar" &> /dev/null   ;then
+if tar -tf  "$RUTA_SEC/$RUTA_CAPTURAS/$arch_tar" &> /dev/null   ;then
 	echo "El archivo .tar  no esta corrupto"
 else
 	echo "El archivo .tar  esta corrupto, interrumpiendo extracción"
 	exit 1
 fi
 
+
+
 #pwd
 
 # Extraigo los el contenido en /capturas/estaticos
 
 	echo "Vamos a extraer los documento del tar en /sec_guard/capturas/estaticos:"
-	tar -xzvf "$arch_tar" -C "$RUTA_SEC/$RUTA_CAPTURAS"
+	tar -xzvf "$RUTA_SEC/$RUTA_CAPTURAS/$arch_tar" -C "$RUTA_SEC/$RUTA_CAPTURAS"
 
 	echo "Se entrajeron con exito!!" 
 
