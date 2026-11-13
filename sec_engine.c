@@ -20,7 +20,7 @@ struct ResumenCategoria {
     int alertas;
 };
 
-// Prototipos de funciones
+// Funciones 
 int calcular_suma(const int *valores, int cantidad);
 int calcular_minimo(const int *valores, int cantidad);
 int calcular_maximo(const int *valores, int cantidad);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
     struct ResumenCategoria res_procesos = {"PROCESOS", 0, 0, 0, 0, 0.0, 0};
     struct ResumenCategoria res_permisos = {"PERMISOS", 0, 0, 0, 0, 0.0, 0};
 
-    // Leer los 'total' registros y clasificarlos por categoria
+    // Leer los total registros y clasificarlos por categoria
     char cat_leida[32];
     int valor_leido = 0;
     for (int i = 0; i < total; i++) {
@@ -144,6 +144,7 @@ int main(int argc, char *argv[]) {
     struct ResumenCategoria *lista_resumen[3] = {&res_disco, &res_procesos, &res_permisos};
     int alertas_totales = res_disco.alertas + res_procesos.alertas + res_permisos.alertas;
 
+    // Aqui emppiezo a escribir el repote final 
     if (fprintf(salida, "INFORME DE MONITOREO\n") < 0 ||
         fprintf(salida, "Etiqueta: %s\n", etiqueta) < 0 ||
         fprintf(salida, "Registros: %d\n\n", total) < 0) {
@@ -153,6 +154,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    //Comienzo a escribir los datos por cada categoria 
     for (int i = 0; i < 3; i++) {
         struct ResumenCategoria *r = lista_resumen[i];
         if (fprintf(salida, "Categoría %s\n", r->categoria) < 0) {
@@ -160,7 +162,7 @@ int main(int argc, char *argv[]) {
             liberar_todo(&disco, &procesos, &permisos);
             return 1;
         }
-
+        // Caso si no se leyeron datos
         if (r->cantidad == 0) {
             if (fprintf(salida, "Sin datos\n\n") < 0) {
                 fclose(salida);
@@ -168,6 +170,8 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
         } else {
+	// Caso si se leyeron datos
+	// Comienzo a escribir el resumen el reporte final 
             if (fprintf(salida, "Cantidad: %d\n", r->cantidad) < 0 ||
                 fprintf(salida, "Suma: %d\n", r->suma) < 0 ||
                 fprintf(salida, "Mínimo: %d\n", r->minimo) < 0 ||
@@ -238,21 +242,22 @@ double calcular_promedio(int suma, int cantidad) {
     return (double)suma / cantidad;
 }
 
-// IMPLEMENTACION FALTANTE: Ajusta los umbrales segun los requisitos de tu proyecto
+// aqui checo las alertas 
 int calcular_alertas(const char *categoria, const int *valores, int cantidad) {
     int alertas = 0;
     for (int i = 0; i < cantidad; i++) {
         if (strcmp(categoria, "DISCO") == 0 && valores[i] >= 80) {
             alertas++;
-        } else if (strcmp(categoria, "PROCESOS") == 0 && valores[i] >= 1000) {
+        } else if (strcmp(categoria, "PROCESOS") == 0 && valores[i] >= 30) {
             alertas++;
-        } else if (strcmp(categoria, "PERMISOS") == 0 && valores[i] >= 50) {
+        } else if (strcmp(categoria, "PERMISOS") == 0 && valores[i] >= 0) {
             alertas++;
         }
     }
     return alertas;
 }
 
+// Funcion para procesar todos los calculos necesarios dado un resumen de categoria 
 void Calculos(const int *valores, int cantidad, struct ResumenCategoria *res) {
     res->cantidad = cantidad;
     if (cantidad == 0 || valores == NULL) {
@@ -281,7 +286,8 @@ void liberar_todo(struct Mediciones *disco, struct Mediciones *procesos, struct 
     permisos->valores = NULL;
 }
 
-// Funcion auxiliar: valida rango y guarda el dato en su estructura correspondiente
+// Funcion auxiliar para ir guardando los datos respecto a cada categoria 
+// en la lectura del archivo
 int guardar_medicion(const char *cat, int val,
                      struct Mediciones *disco,
                      struct Mediciones *procesos,

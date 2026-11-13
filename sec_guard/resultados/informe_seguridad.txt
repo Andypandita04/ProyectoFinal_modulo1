@@ -16,7 +16,7 @@ Suma: 340
 Mínimo: 83
 Máximo: 86
 Promedio: 85.00
-Alertas: 0
+Alertas: 4
 
 Categoría PERMISOS
 Cantidad: 4
@@ -24,6 +24,6 @@ Suma: 33
 Mínimo: 8
 Máximo: 9
 Promedio: 8.25
-Alertas: 0
+Alertas: 4
 
-Observaciones que cumplen condiciones de alerta: 0.
+Observaciones que cumplen condiciones de alerta: 8.
