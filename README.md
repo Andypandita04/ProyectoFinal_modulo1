@@ -133,57 +133,60 @@ PERMISOS 0
 
 ### Etapa 1: organización y archivos
 
-1. **¿Por qué los permisos de un directorio pueden ser distintos a los de un
-   archivo?**
-   En un directorio, `x` permite recorrerlo y `w` modificar sus entradas;
-   en un archivo, `r` permite leer el contenido y `w` modificarlo. Por eso
-   un directorio requiere ejecución para ser utilizable, mientras que un
-   archivo de datos puede ser solo de lectura.
+1. **¿Por qué los permisos adecuados para un directorio pueden ser distintos de los necesarios para un archivo de datos?**
+   Porque `r`, `w` y `x` significan cosas distintas según el objeto. En un directorio, `r` permite listar sus entradas, `w` crear, borrar o renombrar entradas (junto con `x`) y `x` atravesarlo para acceder a lo que contiene. En un archivo, `r` permite leer, `w` modificar y `x` ejecutar. Por eso un directorio necesita `x` para ser utilizable (por ejemplo `755`), mientras que un archivo de datos normalmente no lo necesita (por ejemplo `644`).
+
 2. **¿Qué diferencia existe entre el archivo original y su enlace duro?**
-   Ambos nombres apuntan al mismo inodo y al mismo contenido. El enlace duro
-   no es una copia; es otro acceso al archivo.
-3. **¿Para qué sirven los enlaces simbólicos?**
-   Permiten acceder a un archivo o directorio mediante una ruta alternativa
-   sin duplicar datos. Son útiles para integrar rutas, versiones o recursos
-   compartidos.
-4. **¿Qué metadatos permiten reconocer cambios?**
-   Principalmente el tamaño, la fecha de modificación, la fecha de cambio de
-   metadatos.
+   Ninguna en la práctica: ambos son nombres que apuntan al mismo inodo, por lo que comparten contenido, permisos y propietario. No es una copia y no hay un "original"; los datos solo se liberan cuando el contador de enlaces llega a 0. No puede cruzar sistemas de archivos ni apuntar a directorios.
+
+3. **¿Cuál es la utilidad de establecer enlaces simbólicos en el desarrollo de un sistema?**
+   Permiten acceder a un archivo o directorio mediante una ruta alternativa sin duplicar datos, y pueden cruzar sistemas de archivos. Son útiles para versionar (`current -> release_1.4`), mantener compatibilidad de rutas y compartir recursos o configuraciones. Si el destino se elimina, el enlace queda roto.
+
+4. **¿Qué información de los metadatos permite reconocer cambios en un archivo?**
+   El tamaño (`st_size`), la fecha de modificación del contenido (`mtime`), la fecha de cambio de metadatos (`ctime`), los permisos y propietario, y el número de inodo (que detecta si el archivo fue reemplazado). Como los metadatos pueden alterarse, para mayor certeza se complementan con un hash del contenido (`sha256sum`).
 
 ### Etapa 2: captura y preparación
+1. **¿Qué transformación necesita la salida de cada utilería para convertirse en un registro del archivo normalizado?**
+  **df (disco)**
+- `df -P "$HOME" 2>/dev/null`
+- `awk 'NR==2 {gsub("%", "", $5); print $5}'`
+- `echo -e "$fecha_hora\nDISCO ${disco}" >> "$RUTA_LOG"`
 
-1. **¿Qué transformación necesita cada utilería?**
-   La salida de `df`, `ps` y `find` debe reducirse a un valor entero con su
-   categoría; los logs deben filtrarse, extraerse por campos y normalizarse
-   al formato `CATEGORIA valor`.
-2. **¿Por qué cero puede ser válido?**
-   Cero puede representar ocupación, procesos o archivos con permisos
-   riesgosos igual a cero. Una captura fallida, en cambio, no produce un
-   registro válido y debe detener o informar el flujo.
-3. **¿Cómo se comprueba el encabezado?**
-   Se cuentan los registros normalizados y se compara ese total con la
-   cantidad declarada; el programa en C también rechaza registros faltantes
-   o adicionales.
-4. **¿Por qué el orden de `sed` es determinante?**
-   Primero deben habilitarse las directivas comentadas. Si se eliminan los
-   comentarios antes, esas líneas desaparecen y ya no pueden transformarse.
-   Después se eliminan comentarios restantes y líneas vacías.
-5. **¿Cómo se aísla el puerto sin perder la IP?**
-   Se separa el campo que contiene `IP.puerto`, se extrae la IP con cuatro
-   octetos y se obtiene el puerto desde la última parte numérica, conservando
-   ambos valores como campos independientes.
+**ps (procesos)**
+- `ps -u "$USER" --no-headers 2>/dev/null`
+- `wc -l`
+- `echo -e "$fecha_hora\nPROCESOS $procesos" >> "$RUTA_LOG"`
+
+**find (permisos)**
+- `find "$RUTA_SEC" -type f \( -perm /g+w -o -perm /o+w \) 2>/dev/null`
+- `[ -z "$salida_find" ]` → si la salida está vacía, `permisos=0`
+- `echo "$salida_find" | wc -l`
+- `echo -e "$fecha_hora\nPERMISOS $permisos" >> "$RUTA_LOG"`
+
+2. **¿Por qué un valor cero puede ser válido y no debe confundirse con una captura fallida?**
+   Porque cero es un resultado legítimo: 0 % de ocupación, 0 procesos o 0 archivos con permisos que  significa que no hay hallazgos. Una captura fallida, en cambio, no produce un registro (salida vacía o código de retorno distinto de 0), por lo que debe detener el flujo o informar el error y nunca registrarse como 0.
+
+3. **¿Cómo comprobarán que la cantidad del encabezado corresponde a los registros conservados?**
+   Se cuentan los registros normalizados (`wc -l`) y se compara ese total con la cantidad declarada en el encabezado. Si no coinciden, el programa en C rechaza el archivo por tener registros faltantes o adicionales.
+
+4. **¿Por qué el orden de las instrucciones dentro del flujo de sed es estrictamente determinante al habilitar directivas y eliminar comentarios?**
+   Porque las directivas están comentadas (`#Port`, `#HostKey`) y primero deben habilitarse (`s/#Port/Port/`, `s/#HostKey/HostKey/`). Si antes se eliminan las líneas con `#` (`/#/d`), esas directivas desaparecen y ya no pueden transformarse. Solo después se eliminan los comentarios restantes y las líneas vacías (`/^$/d`).
+
+5. **¿Qué estrategia se empleó para aislar el puerto sin limitar obtener correctamente los cuatro octetos de la IP?**
+   Con `awk` se separa el campo `IP.puerto` (por ejemplo `192.168.1.5.54321`). La IP se extrae con `grep -o` tomando exactamente cuatro octetos, y el puerto se obtiene de la última parte numérica, después del último punto. Cada valor se conserva en un campo independiente (`Origen: IP`, `Puerto: N`) y se unen con `paste`, de modo que no se pierda ningún octeto.
+
 
 ### Etapa 3: análisis en C
 
-1. **¿Qué diferencia hay entre una medición y el resumen?**
+1. **¿Qué diferencia existe entre almacenar una medición y almacenar el resumen de una categoría?**
    Una medición conserva los datos obtenidos y su categoría (son datos crudos) . El
    resumen agrupa varias observaciones y calcula cantidad, suma, mínimo,
-   máximo, promedio y alertas, este utiliza los datos para transformarlo en información.
-2. **¿Cómo se evita dividir entre cero o usar un mínimo inválido?**
+   máximo, promedio y alertas; este utiliza los datos para transformarlo en información.
+2. **¿Cómo evitarán una división entre cero o utilizar un mínimo que todavía no se ha inicializado?**
    Se comprueba la cantidad antes de calcular. Si una categoría no tiene
    datos, el informe muestra `Sin datos`; de lo contrario, los extremos se
    inicializan con la primera medición válida.
-3. **¿Qué se libera ante un error?**
+3. ** Si ocurre un error después de reservar memoria y abrir un archivo, ¿qué recursos deben liberar o cerrar?**
    Deben cerrarse los archivos abiertos y liberarse todos los bloques de
    memoria reservados. También se deben verificar los errores de escritura y
    cierre del archivo de salida.
