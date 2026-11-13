@@ -10,7 +10,7 @@ RUTA_SCRIPTS="$RUTA_B/scripts"
 #
 	echo -e "---------------------------\n---------------------------"
     echo "Comienza ejecución, primero vamos a limpiar archivo residuales de ejecuaciones  anteriores"
-	if  rm -rf "$RUTA_CAPTURAS"/* ;then
+	if  rm -rf "$RUTA_CAPTURAS"/*.log ;then
 	       echo -e "Se vacio directorio  $RUTA_CAPTURAS \
 		   \nVereficando que no existan archivos residuales con ls"
 		   ls "$RUTA_CAPTURAS"
@@ -18,6 +18,21 @@ RUTA_SCRIPTS="$RUTA_B/scripts"
 		echo "No se pudo vaciar el directorio $RUTA_CAPTURAS"
 		exit 1
 	fi
+
+
+
+
+	for archivo in "$RUTA_CAPTURAS/estaticos"/*; do
+    # Verificar que sea un archivo regular
+    if [ -f "$archivo" ]; then
+        # Si termina en .gz no hace nada; si no, lo borra
+        if [[ "$archivo" == *.gz ]]; then
+            : # No hacer nada
+        else
+            rm -f "$archivo"
+        fi
+    fi
+done
 	if  rm -rf "$RUTA_PREP"/* ;then
 		echo "Se vacio directorio  "$RUTA_PREP""
 		ls "$RUTA_PREP"
